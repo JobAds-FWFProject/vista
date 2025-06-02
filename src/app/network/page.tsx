@@ -15,7 +15,7 @@ const labelColors: Record<string, string> = {
     indicator: "#d62728",      // red
     vermittlung: "#9467bd",    // purple
     heading: "#8c564b",        // brown
-    default: "#7f7f7f",        // grey
+    position: "#cccccc",       // grey
 };
 function Legend() {
   return (
@@ -40,7 +40,7 @@ function buildGraph(data: DataRow[]) {
 
     for (const row of data) {
         const rowId = `row-${row.uuid}`;
-    const colour = labelColors[row.label] || labelColors.default;
+    const colour = labelColors[row.label] || "#cccccc"; // Default to grey if label not found;
       nodes.set(rowId, {
           id: rowId,
           text: row.text,
