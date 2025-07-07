@@ -18,7 +18,7 @@ export default function Search({ data, onResults, threshold = 0.5, useExtendedSe
     const [query, setQuery] = useState("");
 
   const fuse = new Fuse(data, {
-      keys: ["text"],
+      keys: ["text", "positions"],
       threshold: threshold,
       useExtendedSearch: useExtendedSearch
   });

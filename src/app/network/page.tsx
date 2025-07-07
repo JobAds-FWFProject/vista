@@ -90,10 +90,12 @@ export default function Network() {
     const [results, setResults] = useState<DataRow[]>([]);
 
     const handleResults = (newResults: DataRow[]) => {
-    setResults(newResults);
-  };
+        setResults(newResults);
+        graphRef.current?.scrollIntoView({ behavior: 'smooth' });
 
-  const playPause = () => {
+    };
+
+    const playPause = () => {
     if ((cosmographRef.current as any)?.isSimulationRunning){
         (cosmographRef.current as any)?.pause();
     } else {
@@ -102,16 +104,20 @@ export default function Network() {
   }
   const fitView = () => {
         (cosmographRef.current as any)?.fitView();
+        graphRef.current?.scrollIntoView({ behavior: 'smooth' });
+
     }
     const resetView = () => {
         handleResults([]);
+        graphRef.current?.scrollIntoView({ behavior: 'smooth' });
+
     }
 
     const graph = buildGraph(results.length > 0 ? results : data);
 
     return (
         <div className="mt-2 relative left-1/2 right-1/2 -mx-[50vw] w-[99.5vw]" >
-            <SearchBar data={data} onResults={handleResults} threshold={0} useExtendedSearch={false} />
+            <SearchBar data={data} onResults={handleResults} threshold={0} useExtendedSearch={true} />
             <div ref={graphRef}>
                 <CosmographProvider>
 
@@ -122,6 +128,7 @@ export default function Network() {
                         links={graph.links}
                         linkArrows={false}
                         nodeColor={(d) => d.colour ?? "#999"}
+                        nodeLabelColor={(d) => d.colour ?? "#cccccc"}
                         nodeLabelAccessor={(d: GraphNode) =>
                             d.id.startsWith("row-") ? "" : d.label}
                         className="w-full"
