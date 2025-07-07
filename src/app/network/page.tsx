@@ -12,14 +12,12 @@ const labelColors: Record<string, string> = {
     job_search: "#1f77b4",     // blue
     job_offer: "#2ca02c",      // green
     service_offer: "#ff7f0e",  // orange
-    indicator: "#d62728",      // red
     vermittlung: "#9467bd",    // purple
-    heading: "#8c564b",        // brown
-    position: "#cccccc",       // grey
+    position: "goldenrod",       // grey
 };
 function Legend() {
   return (
-    <div className="absolute top-10 right-10 bg-gray shadow p-4 rounded text-sm space-y-2 z-10">
+    <div className="absolute top-20 right-10 bg-gray shadow p-4 rounded text-sm space-y-2 z-10">
       {Object.entries(labelColors).map(([label, color]) => (
         <div key={label} className="flex items-center space-x-2">
           <span className="w-4 h-4 rounded-full" style={{ backgroundColor: color }} />
@@ -40,8 +38,11 @@ function buildGraph(data: DataRow[]) {
 
 
     for (const row of data) {
-        const rowId = `row-${row.uuid}`;
-    const colour = labelColors[row.label] || "#cccccc"; // Default to grey if label not found;
+      if (Array.isArray(row.positions) && row.positions.length === 0) {
+          continue; // Skip this row
+      }
+      const rowId = `row-${row.uuid}`;
+      const colour = labelColors[row.label] || "#cccccc"; // Default to grey if label not found;
       nodes.set(rowId, {
           id: rowId,
           text: row.text,
@@ -52,18 +53,17 @@ function buildGraph(data: DataRow[]) {
           adtype: row.label,
         colour: colour,
       });
-
-    for (const pos of row.positions) {
-      const posId = `${pos}`;
-      if (!nodes.has(posId)) {
-        nodes.set(posId, {
+      for (const pos of row.positions) {
+        const posId = `${pos}`;
+        if (!nodes.has(posId)) {
+          nodes.set(posId, {
             id: posId,
             text: "",
             positions: [],
             label: pos,
             pub: "",
-            colour: "#cccccc",
-        });
+            colour: labelColors.position,
+          });
         }
       links.push({ source: rowId, target: posId });
 
@@ -75,8 +75,8 @@ function buildGraph(data: DataRow[]) {
     // Assign sizes
     for (const node of nodes.values()) {
         //node.size = 4 + Math.log2((degree.get(node.id) ?? 1) + 1); //logarithmic scale for size
-        node.size = 4 + Math.sqrt(degree.get(node.id) ?? 1);
-        //node.size = Math.min(20, 10 + Math.sqrt(degree.get(node.id) ?? 1)); // capped size
+        //node.size = 4 + Math.sqrt(degree.get(node.id) ?? 1);
+        node.size = Math.min(20, 5 + Math.sqrt(degree.get(node.id) ?? 1)); // capped size
 
     }
 
@@ -110,9 +110,7 @@ export default function Network() {
     const graph = buildGraph(results.length > 0 ? results : data);
 
     return (
-        <div
-            className="mt-2 relative left-1/2 right-1/2 -mx-[50vw] w-[100vw]"
-        >
+        <div className="mt-2 relative left-1/2 right-1/2 -mx-[50vw] w-[99.5vw]" >
             <SearchBar data={data} onResults={handleResults} threshold={0} useExtendedSearch={false} />
             <div ref={graphRef}>
                 <CosmographProvider>
@@ -134,7 +132,7 @@ export default function Network() {
                     />
 
                     {/* Pause/Fit buttons in top-left */}
-                    <div className="absolute p-4 top-10 left-10 flex space-x-2 z-10">
+                    <div className="absolute p-4 top-20 left-10 flex space-x-2 z-10">
                         <button
                             onClick={resetView}
                             className="px-4 py-1 bg-white border border-gray-300 text-gray-800 rounded bg-yellow-500 hover:bg-yellow-300"
