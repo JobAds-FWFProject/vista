@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { DataRow, GraphNode } from "@/types/data";
-import { Cosmograph } from '@cosmograph/react'
+import { Cosmograph, CosmographProvider } from '@cosmograph/react'
 import { useRef, useState } from 'react'
 import rawData from "../../data/data.json";
 import SearchBar from "../search";
@@ -84,7 +84,8 @@ function buildGraph(data: DataRow[]) {
 }
 
 export default function Network() {
-    const cosmographRef =   useRef(null)
+    const cosmographRef = useRef(null)
+    const graphRef = useRef<HTMLDivElement>(null);
 
     const [results, setResults] = useState<DataRow[]>([]);
 
@@ -102,6 +103,9 @@ export default function Network() {
   const fitView = () => {
         (cosmographRef.current as any)?.fitView();
     }
+    const resetView = () => {
+        handleResults([]);
+    }
 
     const graph = buildGraph(results.length > 0 ? results : data);
 
@@ -110,38 +114,50 @@ export default function Network() {
             className="mt-2 relative left-1/2 right-1/2 -mx-[50vw] w-[100vw]"
         >
             <SearchBar data={data} onResults={handleResults} threshold={0} useExtendedSearch={false} />
+            <div ref={graphRef}>
+                <CosmographProvider>
 
-            {/* Cosmograph now “inset-0” to kill all margins */}
-            <Cosmograph
-                ref={cosmographRef}
-                nodes={graph.nodes}
-                links={graph.links}
-                nodeColor={(d) => d.colour ?? "#999"}
-                nodeLabelAccessor={(d: GraphNode) =>
-                    d.id.startsWith("row-") ? "" : d.label}
-                className="w-full"
-                scaleNodesOnZoom={false}
-                nodeSize={(d: GraphNode) => d.size ?? 5}
-                backgroundColor="#002b36"
+                    {/* Cosmograph now “inset-0” to kill all margins */}
+                    <Cosmograph
+                        ref={cosmographRef}
+                        nodes={graph.nodes}
+                        links={graph.links}
+                        linkArrows={false}
+                        nodeColor={(d) => d.colour ?? "#999"}
+                        nodeLabelAccessor={(d: GraphNode) =>
+                            d.id.startsWith("row-") ? "" : d.label}
+                        className="w-full"
+                        scaleNodesOnZoom={false}
+                        nodeSize={(d: GraphNode) => d.size ?? 5}
+                        backgroundColor="#002b36"
 
-            />
+                    />
 
-            {/* Pause/Fit buttons in top-left */}
-            <div className="absolute p-4 top-10 left-10 flex space-x-2 z-10">
-                <button
-                    onClick={playPause}
-                    className="px-4 py-2 bg-white border border-gray-300 text-gray-800 rounded hover:bg-gray-100"
-                >
-                    Pause/Play
-                </button>
-                <button
-                    onClick={fitView}
-                    className="px-4 py-2 bg-white border border-gray-300 text-gray-800 rounded hover:bg-gray-100"
-                >
-                    Fit
-                </button>
+                    {/* Pause/Fit buttons in top-left */}
+                    <div className="absolute p-4 top-10 left-10 flex space-x-2 z-10">
+                        <button
+                            onClick={resetView}
+                            className="px-4 py-1 bg-white border border-gray-300 text-gray-800 rounded bg-yellow-500 hover:bg-yellow-300"
+                        >
+                            Reset
+                        </button>
+
+                        <button
+                            onClick={playPause}
+                            className="px-4 py-2 bg-white border border-gray-300 text-gray-800 rounded hover:bg-gray-100"
+                        >
+                            Pause/Play
+                        </button>
+                        <button
+                            onClick={fitView}
+                            className="px-4 py-2 bg-white border border-gray-300 text-gray-800 rounded hover:bg-gray-100"
+                        >
+                            Fit
+                        </button>
+                    </div>
+                    <Legend />
+                </CosmographProvider>
             </div>
-            <Legend />
 
         </div>
     );
