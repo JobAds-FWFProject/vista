@@ -36,6 +36,7 @@ function Legend() {
 function buildGraph(data: DataRow[]) {
     const nodes = new Map<string, GraphNode>();
     const links: { source: string; target: string }[] = [];
+    const degree = new Map<string, number>();
 
 
     for (const row of data) {
@@ -65,10 +66,21 @@ function buildGraph(data: DataRow[]) {
         });
         }
       links.push({ source: rowId, target: posId });
+
+      // Count degrees
+      degree.set(rowId, (degree.get(rowId) ?? 0) + 1);
+      degree.set(posId, (degree.get(posId) ?? 0) + 1);
     }
   }
+    // Assign sizes
+    for (const node of nodes.values()) {
+        //node.size = 4 + Math.log2((degree.get(node.id) ?? 1) + 1); //logarithmic scale for size
+        node.size = 4 + Math.sqrt(degree.get(node.id) ?? 1);
+        //node.size = Math.min(20, 10 + Math.sqrt(degree.get(node.id) ?? 1)); // capped size
 
-  return { nodes: [...nodes.values()], links };
+    }
+
+    return { nodes: [...nodes.values()], links };
 }
 
 export default function Network() {
@@ -106,9 +118,12 @@ export default function Network() {
                 links={graph.links}
                 nodeColor={(d) => d.colour ?? "#999"}
                 nodeLabelAccessor={(d: GraphNode) =>
-                  d.id.startsWith("row-") ? "" : d.label}
+                    d.id.startsWith("row-") ? "" : d.label}
                 className="w-full"
                 scaleNodesOnZoom={false}
+                nodeSize={(d: GraphNode) => d.size ?? 5}
+                backgroundColor="#002b36"
+
             />
 
             {/* Pause/Fit buttons in top-left */}

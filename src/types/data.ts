@@ -25,4 +25,5 @@ export interface GraphNode {
   pub_date?: number;
   adtype?: string;
   colour?: string;
+  size?: number;
 }
