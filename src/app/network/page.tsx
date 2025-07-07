@@ -97,7 +97,7 @@ export default function Network() {
         <div
             className="mt-2 relative left-1/2 right-1/2 -mx-[50vw] w-[100vw]"
         >
-            <SearchBar data={data} onResults={handleResults} threshold={0.5} useExtendedSearch={true} />
+            <SearchBar data={data} onResults={handleResults} threshold={0} useExtendedSearch={false} />
 
             {/* Cosmograph now “inset-0” to kill all margins */}
             <Cosmograph

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import { DataRow } from "@/types/data";
@@ -89,7 +90,7 @@ export default function Wordtree() {
   return (
 
         < div >
-      <SearchBar data={data} onResults={handleResults} threshold={0.5} useExtendedSearch={true} />
+      <SearchBar data={data} onResults={handleResults} threshold={0} useExtendedSearch={true} />
             <div
                 className="mt-2 relative left-1/2 right-1/2 -mx-[50vw] w-[100vw] h-screen"
             >

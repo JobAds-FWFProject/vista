@@ -46,7 +46,7 @@ export default function Explorer() {
 
   return (
         <div>
-            <SearchBar data={data} onResults={handleResults} threshold={0.5} useExtendedSearch={true}/>
+            <SearchBar data={data} onResults={handleResults} threshold={0} useExtendedSearch={true}/>
 
             {results.length > 0 && (
                 <p className="mt-4 font-semibold">
