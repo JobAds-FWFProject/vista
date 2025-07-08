@@ -183,9 +183,9 @@ export default function Network() {
                         <div className="absolute left-0 top-full mt-1 w-64 text-white p-3 rounded shadow-lg text-xs">
                             {selectedNode ? (
                                 <div>
-                                    <h5 className="text-lg mb-2">{selectedNode.pub_name !== "" ? selectedNode.pub_name : selectedNode.label.toUpperCase()}<br />
+                                    <h5 className="text-base mb-2">{selectedNode.pub_name !== "" ? selectedNode.pub_name : selectedNode.label.toUpperCase()}<br />
                                         {selectedNode.pub_date ? formatDate(selectedNode.pub_date) : ""}
-                                        {selectedNode.page_num ? `, p.${selectedNode.page_num}` : ""}
+                                        {selectedNode.page_num ? `, p. ${selectedNode.page_num}` : ""}
 
                                     </h5>
                                     <p className="mt-2 text-left tracking-wideCan I">
