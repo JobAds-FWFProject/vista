@@ -130,21 +130,21 @@ export default function Network() {
   const year = parseInt(s.slice(0, 4));
       return year.toString();
     };
-function highlightKeywords(text: string, keywords: string[]): (string | JSX.Element)[] {
-  if (!keywords || keywords.length === 0) return [text];
+    function highlightKeywords(text: string | undefined, keywords: string[]|undefined): React.ReactNode[] {
+      if (!keywords || keywords.length === 0) return [text];
 
-  const escaped = keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-  const regex = new RegExp(`\\b(${escaped.join('|')})\\b`, 'gi');
+      const escaped = keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      const regex = new RegExp(`\\b(${escaped.join('|')})\\b`, 'gi');
 
-  const parts = text.split(regex);
+      const parts = text?.split(regex) ?? [];
 
-  return parts.map((part, i) =>
-    keywords.some(k => k.toLowerCase() === part.toLowerCase()) ? (
-      <span class="highlight-keyword">{part}</span>
-    ) : (
-      part
-    )
-  );
+      return parts.map((part, i) =>
+            keywords.some(k => k.toLowerCase() === part.toLowerCase()) ? (
+                <span key={i} className="highlight-keyword">{part}</span>
+            ) : (
+                part
+            )
+        );
     }
 
 
