@@ -22,7 +22,6 @@ export interface GraphNode {
   positions?: string[];
   label: string;
   pub?: string;
-  pub_date?: number;
   adtype?: string;
   colour?: string;
   size?: number;

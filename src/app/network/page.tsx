@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { DataRow, GraphNode } from "@/types/data";
-import { Cosmograph, CosmographProvider } from '@cosmograph/react'
+import { CosmographProvider, Cosmograph, CosmographTimeline } from '@cosmograph/react'
 import { useRef, useState } from 'react'
 import rawData from "../../data/data.json";
 import SearchBar from "../search";
@@ -33,7 +33,9 @@ function Legend() {
 
 function buildGraph(data: DataRow[]) {
     const nodes = new Map<string, GraphNode>();
-    const links: { source: string; target: string }[] = [];
+    const links: {
+        source: string; target: string;  pub_date?: number;
+    }[] = [];
     const degree = new Map<string, number>();
 
 
@@ -49,7 +51,6 @@ function buildGraph(data: DataRow[]) {
           positions: row.positions,
           label: row.iiif,
           pub: row.pub,
-          pub_date: row.pub_date,
           adtype: row.label,
         colour: colour,
       });
@@ -65,10 +66,12 @@ function buildGraph(data: DataRow[]) {
             colour: labelColors.position,
           });
         }
-      links.push({ source: rowId, target: posId });
+        links.push({
+          source: rowId, target: posId, pub_date: row.pub_date,
+        });
 
-      // Count degrees
-      degree.set(rowId, (degree.get(rowId) ?? 0) + 1);
+          // Count degrees
+          degree.set(rowId, (degree.get(rowId) ?? 0) + 1);
       degree.set(posId, (degree.get(posId) ?? 0) + 1);
     }
   }
@@ -112,6 +115,12 @@ export default function Network() {
         graphRef.current?.scrollIntoView({ behavior: 'smooth' });
 
     }
+ const parseDateString = (yyyymmdd: string) => {
+  const s = yyyymmdd.toString();
+  const year = parseInt(s.slice(0, 4));
+   return year;
+    };
+
 
     const graph = buildGraph(results.length > 0 ? results : data);
 
@@ -161,6 +170,14 @@ export default function Network() {
                         </button>
                     </div>
                     <Legend />
+                    <CosmographTimeline
+                        accessor={d => (d as any).pub_date}
+                        animationSpeed={20}
+                        showAnimationControls
+                        formatter={d => parseDateString(d.toString())}
+                        barCount={100}
+                        onAnimationPlay={() => console.log('Animation started')}
+                    />
                 </CosmographProvider>
             </div>
 
