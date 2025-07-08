@@ -30,3 +30,8 @@ a:focus {
   text-decoration: underline;
   outline: none;
 }
+
+
+#CosmographTimeline{
+  background-color: var(--background);
+}
