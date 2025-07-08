@@ -2,7 +2,7 @@
 "use client";
 import { DataRow, GraphNode } from "@/types/data";
 import { CosmographProvider, Cosmograph, CosmographTimeline } from '@cosmograph/react'
-import { useRef, useState } from 'react'
+import { useRef, useState, useMemo } from 'react'
 import rawData from "../../data/data.json";
 import SearchBar from "../search";
 
@@ -62,6 +62,8 @@ function buildGraph(data: DataRow[]) {
           pub_name: row.pub_name,
           adtype: row.label,
           colour: colour,
+          pub_date: row.pub_date,
+        page_num: row.page_num
       });
         for (const pos of row.positions) {
         const posId = `${pos}`;
@@ -101,6 +103,7 @@ export default function Network() {
     const graphRef = useRef<HTMLDivElement>(null);
 
     const [results, setResults] = useState<DataRow[]>([]);
+    const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
 
     const handleResults = (newResults: DataRow[]) => {
         setResults(newResults);
@@ -119,14 +122,17 @@ export default function Network() {
     const resetView = () => {
         handleResults([]);
     }
- const parseDateString = (yyyymmdd: string) => {
-  const s = yyyymmdd.toString();
+    const handleNodeClick = (node: GraphNode) => {
+        setSelectedNode(node);
+    }
+    const parseDateString = (yyyymmdd: string) => {
+            const s = yyyymmdd.toString();
   const year = parseInt(s.slice(0, 4));
    return year;
     };
 
 
-    const graph = buildGraph(results.length > 0 ? results : data);
+    const graph = useMemo(() => buildGraph(results.length > 0 ? results : data), [results]);
 
     return (
         <div className="mt-2 relative left-1/2 right-1/2 -mx-[50vw] w-[99.5vw]" >
@@ -149,6 +155,8 @@ export default function Network() {
                         scaleNodesOnZoom={false}
                         nodeSize={(d: GraphNode) => d.size ?? 5}
                         backgroundColor="#002b36"
+                        onLabelClick={handleNodeClick}
+
                     />
 
                     {/* Pause/Fit buttons in top-left */}
@@ -172,6 +180,41 @@ export default function Network() {
                         >
                             Fit
                         </button>
+                        <div className="absolute left-0 top-full mt-1 w-64 text-white p-3 rounded shadow-lg text-xs">
+                            {selectedNode ? (
+                                <div>
+                                    <h5 className="text-lg mb-2">{selectedNode.pub_name !== "" ? selectedNode.pub_name : selectedNode.label.toUpperCase()}<br />
+                                        {selectedNode.pub_date ? formatDate(selectedNode.pub_date) : ""}
+                                        {selectedNode.page_num ? `, p.${selectedNode.page_num}` : ""}
+
+                                    </h5>
+                                    <p className="mt-2 text-left tracking-wideCan I">
+                                        {selectedNode.text}
+                                    </p>
+                                    {selectedNode.iiif && (
+                                        <div className="relative inline-block group">
+                                            <a
+                                                href={selectedNode.iiif}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                View original image
+                                            </a>
+                                            <div className="absolute hidden group-hover:block top-full left-0 mt-2 w-64 border rounded shadow-lg bg-white">
+                                                <img
+                                                    src={selectedNode.iiif}
+                                                    alt="Preview"
+                                                    className="w-full h-auto rounded"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <p>Select a node to see details</p>
+                            )}
+                        </div>
+
                     </div>
                     <Legend />
                     <CosmographTimeline

@@ -28,4 +28,6 @@ export interface GraphNode {
   colour?: string;
   size?: number;
   iiif?: string;
+  pub_date?: number;
+  page_num?: number;
 }
