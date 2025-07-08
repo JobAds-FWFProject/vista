@@ -9,11 +9,10 @@ import SearchBar from "../search";
 
 const data: DataRow[] = rawData as DataRow[];
 const labelColors: Record<string, string> = {
-    job_search: "#1f77b4",     // blue
+    job_search: "indianred",     // blue
     job_offer: "#2ca02c",      // green
-    service_offer: "#ff7f0e",  // orange
-    vermittlung: "#9467bd",    // purple
-    position: "goldenrod",       // grey
+    service_offer: "cyan",  // orange
+    keyword: "goldenrod",       // grey
 };
 function Legend() {
   return (
@@ -65,7 +64,7 @@ function buildGraph(data: DataRow[]) {
           pub_date: row.pub_date,
         page_num: row.page_num
       });
-        for (const pos of row.positions) {
+        for (const pos of row.keywords ?? [])  {
         const posId = `${pos}`;
         if (!nodes.has(posId)) {
           nodes.set(posId, {
@@ -75,7 +74,7 @@ function buildGraph(data: DataRow[]) {
               label: pos,
               pub: "",
               pub_name: "",
-              colour: labelColors.position,
+              colour: labelColors.keyword,
           });
           }
         links.push({
@@ -156,6 +155,9 @@ export default function Network() {
                         nodeSize={(d: GraphNode) => d.size ?? 5}
                         backgroundColor="#002b36"
                         onLabelClick={handleNodeClick}
+                        renderLinks={false}
+                        simulationRepulsion={5.0}
+                        simulationGravity={2.0}
 
                     />
 
@@ -209,6 +211,10 @@ export default function Network() {
                                             </div>
                                         </div>
                                     )}
+                                    <p className="invisible">
+                                        {selectedNode.id}
+                                    </p>
+
                                 </div>
                             ) : (
                                 <p>Select a node to see details</p>

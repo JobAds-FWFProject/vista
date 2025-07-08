@@ -10,6 +10,7 @@ export type DataRow = {
   text: string;
   iiif: string;
   positions: string[];
+  keywords?: string[];
 };
 
 export type PubsRow = {
