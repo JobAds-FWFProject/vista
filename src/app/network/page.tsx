@@ -29,6 +29,13 @@ function Legend() {
 }
 
 
+function formatDate(yyyymmdd: number): string {
+  const s = yyyymmdd.toString();
+  const year = s.slice(0, 4);
+  const month = s.slice(4, 6);
+  const day = s.slice(6, 8);
+  return `${day}-${month}-${year}`;
+}
 
 
 function buildGraph(data: DataRow[]) {
@@ -49,23 +56,26 @@ function buildGraph(data: DataRow[]) {
           id: rowId,
           text: row.text,
           positions: row.positions,
-          label: row.iiif,
+          iiif: row.iiif,
+          label: row.pub_name + "<br/>" + formatDate(row.pub_date) + ", p." + row.page_num,
           pub: row.pub,
+          pub_name: row.pub_name,
           adtype: row.label,
-        colour: colour,
+          colour: colour,
       });
-      for (const pos of row.positions) {
+        for (const pos of row.positions) {
         const posId = `${pos}`;
         if (!nodes.has(posId)) {
           nodes.set(posId, {
-            id: posId,
-            text: "",
-            positions: [],
-            label: pos,
-            pub: "",
-            colour: labelColors.position,
+              id: posId,
+              text: "",
+              positions: [],
+              label: pos,
+              pub: "",
+              pub_name: "",
+              colour: labelColors.position,
           });
-        }
+          }
         links.push({
           source: rowId, target: posId, pub_date: row.pub_date,
         });
@@ -132,13 +142,13 @@ export default function Network() {
                         linkArrows={false}
                         nodeColor={(d) => d.colour ?? "#999"}
                         nodeLabelColor={(d) => d.colour ?? "#cccccc"}
+                        hoveredNodeLabelColor={(d) => d.colour ?? "#cccccc"}
                         nodeLabelAccessor={(d: GraphNode) =>
-                            d.id.startsWith("row-") ? "" : d.label}
+                            d.id.startsWith("row-") ? d.label : d.label}
                         className="w-full max-w-[90rem] mx-auto"
                         scaleNodesOnZoom={false}
                         nodeSize={(d: GraphNode) => d.size ?? 5}
                         backgroundColor="#002b36"
-
                     />
 
                     {/* Pause/Fit buttons in top-left */}
