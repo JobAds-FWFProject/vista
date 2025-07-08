@@ -54,6 +54,7 @@ function buildGraph(data: DataRow[]) {
       nodes.set(rowId, {
           id: rowId,
           text: row.text,
+        keywords: row.keywords ?? [],
           positions: row.positions,
           iiif: row.iiif,
           label: row.pub_name + "<br/>" + formatDate(row.pub_date) + ", p." + row.page_num,
@@ -91,7 +92,7 @@ function buildGraph(data: DataRow[]) {
         //node.size = 4 + Math.log2((degree.get(node.id) ?? 1) + 1); //logarithmic scale for size
         //node.size = 4 + Math.sqrt(degree.get(node.id) ?? 1);
         node.size = Math.min(20, 5 + Math.sqrt(degree.get(node.id) ?? 1)); // capped size
-
+       node.degree = degree.get(node.id) ?? 0;
     }
 
     return { nodes: [...nodes.values()], links };
@@ -129,6 +130,22 @@ export default function Network() {
   const year = parseInt(s.slice(0, 4));
       return year.toString();
     };
+function highlightKeywords(text: string, keywords: string[]): (string | JSX.Element)[] {
+  if (!keywords || keywords.length === 0) return [text];
+
+  const escaped = keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const regex = new RegExp(`\\b(${escaped.join('|')})\\b`, 'gi');
+
+  const parts = text.split(regex);
+
+  return parts.map((part, i) =>
+    keywords.some(k => k.toLowerCase() === part.toLowerCase()) ? (
+      <span class="highlight-keyword">{part}</span>
+    ) : (
+      part
+    )
+  );
+    }
 
 
     const graph = useMemo(() => buildGraph(results.length > 0 ? results : data), [results]);
@@ -191,7 +208,7 @@ export default function Network() {
 
                                     </h5>
                                     <p className="mt-2 text-left tracking-wideCan I">
-                                        {selectedNode.text}
+                                        {selectedNode.text !== "" ? highlightKeywords(selectedNode.text, selectedNode.keywords) : "This keyword is connected to " + selectedNode.degree + " advertisements."}
                                     </p>
                                     {selectedNode.iiif && (
                                         <div className="relative inline-block group">
@@ -228,7 +245,7 @@ export default function Network() {
                         animationSpeed={20}
                         showAnimationControls
                         formatter={d => parseDateString(d.toString())}
-                        barCount={100}
+                        barCount={99}
                         onAnimationPlay={() => console.log('Animation started')}
                     />
                 </CosmographProvider>

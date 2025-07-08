@@ -31,4 +31,6 @@ export interface GraphNode {
   iiif?: string;
   pub_date?: number;
   page_num?: number;
+  degree?: number;
+  keywords?: string[];
 }

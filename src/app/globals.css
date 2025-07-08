@@ -35,3 +35,8 @@ a:focus {
 #CosmographTimeline{
   background-color: var(--background);
 }
+
+.highlight-keyword {
+  color: goldenrod; /* Solarized Yellow */
+  font-weight: bold;
+}
