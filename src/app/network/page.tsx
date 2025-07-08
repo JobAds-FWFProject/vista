@@ -128,7 +128,7 @@ export default function Network() {
     const parseDateString = (yyyymmdd: string) => {
             const s = yyyymmdd.toString();
   const year = parseInt(s.slice(0, 4));
-   return year;
+      return year.toString();
     };
 
 
