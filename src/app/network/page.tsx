@@ -94,8 +94,6 @@ export default function Network() {
 
     const handleResults = (newResults: DataRow[]) => {
         setResults(newResults);
-        graphRef.current?.scrollIntoView({ behavior: 'smooth' });
-
     };
 
     const playPause = () => {
@@ -107,13 +105,9 @@ export default function Network() {
   }
   const fitView = () => {
         (cosmographRef.current as any)?.fitView();
-        graphRef.current?.scrollIntoView({ behavior: 'smooth' });
-
     }
     const resetView = () => {
         handleResults([]);
-        graphRef.current?.scrollIntoView({ behavior: 'smooth' });
-
     }
  const parseDateString = (yyyymmdd: string) => {
   const s = yyyymmdd.toString();
@@ -140,7 +134,7 @@ export default function Network() {
                         nodeLabelColor={(d) => d.colour ?? "#cccccc"}
                         nodeLabelAccessor={(d: GraphNode) =>
                             d.id.startsWith("row-") ? "" : d.label}
-                        className="w-full"
+                        className="w-full max-w-[90rem] mx-auto"
                         scaleNodesOnZoom={false}
                         nodeSize={(d: GraphNode) => d.size ?? 5}
                         backgroundColor="#002b36"
