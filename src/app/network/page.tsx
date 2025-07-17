@@ -121,6 +121,7 @@ export default function Network() {
     }
     const resetView = () => {
         handleResults([]);
+        setSelectedNode(null);
     }
     const handleNodeClick = (node: GraphNode) => {
         setSelectedNode(node);

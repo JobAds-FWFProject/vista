@@ -18,7 +18,7 @@ export default function Home() {
             <div className="mb-6">
                 <h2 className="text-2xl font-semibold mb-2"><Link href="/network">Network view</Link></h2>
                 <p className="text-gray-400">
-                    This view shows the adverisements (all or the the ads that match your search query) and the positions advertised in the advertisements as nodes. The ad nodes are connected to one or more position nodes as inferred from the ads. The network is also generated using a fuzzy search, so it will also include variations of the root term.
+                    This view shows the adverisements (all or the the ads that match your search query) and some keywords from the the advertisements as nodes. The ad nodes are connected to one or more position nodes as inferred from the ads. The network is also generated using a fuzzy search, so it will also include variations of the root term.
                 </p>
                 <p className='text-sm'><span className="font-semibold text-yellow-500">Note:</span>{' '}
                     <span className="text-gray-400">
